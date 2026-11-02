@@ -1,0 +1,43 @@
+[package]
+name = "megacompress"
+version = "0.1.0"
+edition = "2021"
+description = "Reempaquetador de ZIP grandes a .tar.zst (rápido) o .7z (LZMA2 sólido)"
+license = "MIT"
+
+[lib]
+name = "megacompress"
+path = "src/lib.rs"
+
+[[bin]]
+name = "megacompress"
+path = "src/main.rs"
+
+[dependencies]
+# UI nativa (sin webview). Versión exacta: la API de egui cambia entre minors.
+eframe = "=0.31.1"
+rfd = "0.15"
+open = "5"
+dirs = "5"
+
+# Motor
+zstd = { version = "0.13", features = ["zstdmt"] }
+# Solo los métodos que aceptamos; Deflate64/LZMA/PPMd/AES quedan DESACTIVADOS a propósito
+# para que el crate los reporte como "no soportados" y los rechacemos con mensaje claro.
+zip = { version = "=2.6.1", default-features = false, features = ["deflate", "bzip2", "zstd"] }
+tar = "0.4"
+sevenz-rust2 = "=0.21.4"
+crc32fast = "1"
+crossbeam-channel = "0.5"
+unicode-normalization = "0.1"
+thiserror = "1"
+sysinfo = "0.33"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
